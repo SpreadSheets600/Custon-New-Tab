@@ -4,23 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Shanti&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
 
     <title>New Tab</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script>
-      var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      var weekdays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
 
       function set_content__time(id, interval) {
         var d = new Date();
         var hours = d.getHours() % 12 || 12; // Get hours in 12-hour format
-        var ampm = d.getHours() >= 12 ? 'PM' : 'AM'; // Get AM/PM
-        var s_time = hours + ":" + ("0" + d.getMinutes()).slice(-2) + " " + ampm; // Construct time string
+        var ampm = d.getHours() >= 12 ? "PM" : "AM"; // Get AM/PM
+        var s_time =
+          hours + " : " + ("0" + d.getMinutes()).slice(-2) + " " + ampm; // Construct time string
         document.getElementById(id).innerHTML = s_time;
         setTimeout(function () {
           set_content__time(id, interval);
@@ -31,42 +46,77 @@
         var d = new Date();
         s_date =
           d.getFullYear() +
-          "-" +
+          " - " +
           ("0" + (d.getMonth() + 1)).slice(-2) +
-          "-" +
+          " - " +
           ("0" + d.getDate()).slice(-2);
         s_weekday = weekdays[d.getDay()];
-        document.getElementById(id).innerHTML =
-          s_date + " &nbsp;&ndash;&nbsp; " + s_weekday;
+        document.getElementById(id).innerHTML = s_date;
         setTimeout(function () {
           set_content__date(id, interval);
         }, interval);
       }
 
+      function getWeatherIcon(iconCode) {
+        switch (iconCode) {
+          case "01d":
+            return "sun";
+          case "01n":
+            return "moon";
+          case "02d":
+          case "02n":
+          case "03d":
+          case "03n":
+            return "cloud";
+          case "04d":
+          case "04n":
+            return "cloud-meatball";
+          case "09d":
+          case "09n":
+            return "cloud-showers-heavy";
+          case "10d":
+          case "10n":
+            return "cloud-sun-rain";
+          case "11d":
+          case "11n":
+            return "bolt";
+          case "13d":
+          case "13n":
+            return "snowflake";
+          case "50d":
+          case "50n":
+            return "smog";
+          default:
+            return "question-circle";
+        }
+      }
+
       // Get the user's location
-      navigator.geolocation.getCurrentPosition(function(position) {
+      navigator.geolocation.getCurrentPosition(function (position) {
         // Fetch weather data using OpenWeatherMap API
-        var apiKey = '9fc5a82dc7e08bb77a3bdc0f2c7f7439';
+        var apiKey = "9fc5a82dc7e08bb77a3bdc0f2c7f7439";
         var lat = position.coords.latitude;
         var lon = position.coords.longitude;
         var apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
 
-        $.getJSON(apiUrl, function(data) {
-          var weatherIcon = `<img src="http://openweathermap.org/img/w/${data.weather[0].icon}.png" alt="${data.weather[0].description}">`;
-          var temperature = `${data.main.temp}&deg;C`;
+        $.getJSON(apiUrl, function (data) {
+          var temperature = `${data.main.temp} &deg;C`;
           var weatherDescription = data.weather[0].description;
           var location = data.name;
-          var weatherHtml = `${location}<br>${weatherIcon} ${temperature} <br> ${weatherDescription}`;
-          $('#weather').html(weatherHtml);
+          var weatherIconClass = `fas fa-${getWeatherIcon(
+            data.weather[0].icon
+          )}`;
+          var weatherHtml = `Kolkata <br>${temperature}`;
+          $("#weather").html(weatherHtml);
         });
       });
     </script>
 
     <style>
       h1.time {
-        font-family: 'Pacifico', cursive;
+        font-family: "Catamaran";
         font-weight: 400;
-        font-size: 6em;
+        font-size: 3em;
         color: #f5f5f5;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         text-align: center;
@@ -74,9 +124,9 @@
 
       h1.date {
         margin-top: -0.7em;
-        font-family: "Lato";
-        font-weight: 300;
-        font-size: 1.95em;
+        font-family: "Shanti";
+        font-weight: 200;
+        font-size: 1.5em;
         text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px gray;
         text-align: center;
       }
@@ -102,12 +152,12 @@
         margin: 0.5em;
         color: white;
         padding: 0 1em;
-        backdrop-filter: blur(10px);
         border-radius: 1em;
+        backdrop-filter: blur(10px);
       }
 
       .box.halftrans {
-        background-color: rgba(255, 255, 255, 0.3);
+        background-color: rgba(255, 255, 255, 0.1);
         padding: 1em 2em;
       }
 
@@ -135,12 +185,14 @@
       h1 {
         margin: 0;
       }
+
       .center {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
       }
+
       .background {
         position: absolute;
         left: 0;
@@ -148,6 +200,25 @@
         width: 100vw;
         height: 100vh;
         object-fit: cover;
+      }
+
+      .weather {
+        font-family: "Shanti", sans-serif;
+        font-size: 1.5em;
+        font-weight: 300;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .weather-icon {
+        font-size: 6em;
+        margin-right: 0.5em; /* Add some spacing between the icon and the text */
+      }
+
+      #weather-info {
+        padding-left: 0.5em; /* Add padding to the left of the text */
       }
     </style>
   </head>
@@ -185,7 +256,10 @@
     </div>
 
     <div class="box bottom right halftrans">
-      <div id="weather" style="text-align: center;"></div>
+      <div id="weather" class="weather">
+        <i id="weather-icon" class="fas"></i>
+        <span id="weather-info"></span>
+      </div>
     </div>
   </body>
 </html>
