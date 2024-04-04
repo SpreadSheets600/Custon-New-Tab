@@ -1,150 +1,152 @@
 <!DOCTYPE html>
-
 <html lang="en">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Lato"
-  />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=simpleOswald"
-  />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" />
 
-  <title>New Tab</title>
+    <title>New Tab</title>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-  <script>
-    var weekdays = ["Sunday", "Monday", "Tuesady", "Wednesay", "Thrusday", "Friday", "Saturday"];
+    <script>
+      var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-    function set_content__time(id, interval) {
-      var d = new Date();
-      var s_time =
-        ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
-      document.getElementById(id).innerHTML = s_time;
-      setTimeout(function () {
-        set_content__time(id, interval);
-      }, interval);
-    }
+      function set_content__time(id, interval) {
+        var d = new Date();
+        var s_time =
+          ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+        document.getElementById(id).innerHTML = s_time;
+        setTimeout(function () {
+          set_content__time(id, interval);
+        }, interval);
+      }
 
-    function set_content__date(id, interval) {
-      var d = new Date();
-      s_date =
-        d.getFullYear() +
-        "-" +
-        ("0" + (d.getMonth() + 1)).slice(-2) +
-        "-" +
-        ("0" + d.getDate()).slice(-2);
-      s_weekday = weekdays[d.getDay()];
-      document.getElementById(id).innerHTML =
-        s_date + " &nbsp;&ndash;&nbsp; " + s_weekday;
-      setTimeout(function () {
-        set_content__date(id, interval);
-      }, interval);
-    }
-  </script>
+      function set_content__date(id, interval) {
+        var d = new Date();
+        s_date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+        s_weekday = weekdays[d.getDay()];
+        document.getElementById(id).innerHTML =
+          s_date + " &nbsp;&ndash;&nbsp; " + s_weekday;
+        setTimeout(function () {
+          set_content__date(id, interval);
+        }, interval);
+      }
 
-  <style>
-    h1.time {
-      /* was:
-    font-family: "Shree Devanagari 714";
-    font-weight: 500;
-    */
-      font-family: "simpleOswald";
-      font-weight: 200;
-      font-size: 9em;
-      text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px gray;
-    }
+      // Get the user's location
+      navigator.geolocation.getCurrentPosition(function(position) {
+        // Fetch weather data using OpenWeatherMap API
+        var apiKey = '9fc5a82dc7e08bb77a3bdc0f2c7f7439';
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+        var apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
 
-    h1.date {
-      margin-top: -0.7em;
+        $.getJSON(apiUrl, function(data) {
+          var weatherIcon = `<img src="http://openweathermap.org/img/w/${data.weather[0].icon}.png" alt="${data.weather[0].description}">`;
+          var temperature = `${data.main.temp}&deg;C`;
+          var weatherDescription = data.weather[0].description;
+          var weatherHtml = `${weatherIcon} ${temperature} <br> ${weatherDescription}`;
+          $('#weather').html(weatherHtml);
+        });
+      });
+    </script>
 
-      font-family: "Lato";
-      font-weight: 300;
-      font-size: 1.95em;
-      text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px gray;
-    }
+    <style>
+      h1.time {
+        font-family: 'Pacifico', cursive;
+        font-weight: 400;
+        font-size: 6em;
+        color: #f5f5f5;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
 
-    body {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      background-color: gray;
-      /* now using <img/> tag instead of background-image, to have e.g. the possibility of right-click -> search Google for image
-    background-image: url(https://unsplash.it/1920/1080?random);
-    background-size: cover;
-    background-repeat: no-repeat;
-    */
-      font-family: Hind;
-      /* was: Avenir */
-      font-weight: 300;
-    }
+      h1.date {
+        margin-top: -0.7em;
+        font-family: "Lato";
+        font-weight: 300;
+        font-size: 1.95em;
+        text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px gray;
+      }
 
-    .background {
-      position: absolute;
-      left: 0;
-      top: 0;
-      min-width: 100vw;
-      min-height: 100vh;
-    }
+      body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(to bottom right, #a7c7e7, #fbf8f1);
+        font-family: Hind;
+        font-weight: 300;
+      }
 
-    .box {
-      margin: 0.5em;
-      color: white;
-      padding: 0 1em;
-    }
+      .background {
+        position: absolute;
+        left: 0;
+        top: 0;
+        min-width: 100vw;
+        min-height: 100vh;
+      }
 
-    .box.halftrans {
-      background-color: #00000044;
-      border-radius: 0.7em;
-      padding: 0 1.7em;
-    }
+      .box {
+        margin: 0.5em;
+        color: white;
+        padding: 0 1em;
+      }
 
-    .left {
-      position: absolute;
-      left: 2em;
-      width: 25em;
-      padding: 0%;
-      text-align: center;
-    }
+      .box.halftrans {
+        background-color: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(5px);
+        border-radius: 1em;
+        padding: 1em 2em;
+      }
 
-    .right {
-      position: absolute;
-      right: 2em;
-      text-align: right;
-    }
+      .left {
+        left: 2vw;
+        width: auto;
+        padding: 1em;
+      }
 
-    .top {
-      position: absolute;
-      top: 3em;
-    }
+      .right {
+        right: 2vw;
+        padding: 1em;
+      }
 
-    .bottom {
-      position: absolute;
-      bottom: 3em;
-    }
+      .top {
+        position: absolute;
+        top: 3em;
+      }
 
-    h1 {
-      margin: 0;
-    }
-    .center {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .background {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-    }
-  </style>
+      .bottom {
+        position: absolute;
+        bottom: 3em;
+      }
+
+      h1 {
+        margin: 0;
+      }
+      .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .background {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+      }
+    </style>
+  </head>
 
   <body class="center">
     <img
@@ -160,7 +162,7 @@
       Your browser does not support the video tag.
     </video>
 
-    <div class="box bottom left">
+    <div class="box bottom left halftrans">
       <h1 id="id_time" class="time" style="opacity: 0"></h1>
       <script>
         set_content__time("id_time", 1000);
@@ -180,6 +182,10 @@
       <script>
         $("#id_date").delay(500).animate({ opacity: 0.66 }, 900);
       </script>
+    </div>
+
+    <div class="box bottom right halftrans">
+      <div id="weather"></div>
     </div>
   </body>
 </html>
